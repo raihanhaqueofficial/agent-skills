@@ -1,0 +1,67 @@
+name: compliance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  compliance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No personal or sensitive data
+        run: |
+          set -e
+          # The author's own handle and copyright line are deliberate.
+          # Everything else personal must never appear.
+          PAT='raihan|haque|diginess|dreamphonya|phoron|anant|credo|kolkata|thedrinkofmotivation|226390473|/opt/data|/opt/hermes'
+          HITS=$(grep -rniE "$PAT" . --exclude-dir=.git --exclude-dir=.github 2>/dev/null \
+                 | sed 's/raihanhaqueofficial/__HANDLE__/g' \
+                 | grep -iE "$PAT" || true)
+          if [ -n "$HITS" ]; then
+            echo "::error::personal or environment-specific data found:"
+            echo "$HITS"
+            exit 1
+          fi
+          echo "OK - no personal data"
+
+      - name: No secrets
+        run: |
+          set -e
+          if grep -rniE 'sk-[a-zA-Z0-9]{16,}|ghp_[a-zA-Z0-9]{20,}|BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}' . --exclude-dir=.git; then
+            echo "::error::possible secret committed"; exit 1
+          fi
+          echo "OK - no secrets"
+
+      - name: No absolute machine paths
+        run: |
+          set -e
+          if grep -rnE '/(home|Users)/[a-zA-Z0-9._-]+/' . --exclude-dir=.git --exclude-dir=.github; then
+            echo "::error::absolute personal path found"; exit 1
+          fi
+          echo "OK - no absolute paths"
+
+      - name: Required licence and notice files exist
+        run: |
+          set -e
+          for f in LICENSE NOTICE LICENSES/Apache-2.0.txt TRADEMARK.md DISCLAIMER.md PRIVACY.md; do
+            [ -f "$f" ] || { echo "::error::required compliance file missing: $f"; exit 1; }
+          done
+          echo "OK - compliance files present"
+
+      - name: Every skill is well formed
+        run: |
+          set -e
+          fail=0
+          for d in skills/*/; do
+            name=$(basename "$d")
+            f="$d/SKILL.md"
+            if [ ! -f "$f" ]; then echo "::error::$name has no SKILL.md"; fail=1; continue; fi
+            head -1 "$f" | grep -q '^---' || { echo "::error::$name SKILL.md has no frontmatter"; fail=1; }
+            fm=$(sed -n '2,12p' "$f" | grep -m1 '^name:' | sed 's/name: *//;s/["'"'"']//g' | tr -d '\r')
+            [ "$fm" = "$name" ] || { echo "::error::$name frontmatter name '$fm' does not match directory"; fail=1; }
+            echo "  ok: $name"
+          done
+          exit $fail
