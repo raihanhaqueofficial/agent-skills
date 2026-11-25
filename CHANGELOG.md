@@ -28,7 +28,3 @@ Notable changes to this project. Format follows
   `PRIVACY.md`, `SECURITY.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and an
   automated compliance check.
 
-### Notes
-- `html-to-video-local` adapts material from the HyperFrames project
-  (Apache-2.0). The licence text travels with it at
-  `LICENSES/Apache-2.0.txt`; changes are recorded in `NOTICE`.

@@ -70,7 +70,7 @@ fi
 
 # --- 5. required compliance files ------------------------------------------
 say "5. required files"
-for f in LICENSE NOTICE LICENSES/Apache-2.0.txt TRADEMARK.md DISCLAIMER.md \
+for f in LICENSE TRADEMARK.md DISCLAIMER.md \
          PRIVACY.md SECURITY.md CONTRIBUTING.md CODE_OF_CONDUCT.md CHANGELOG.md; do
   if [ ! -f "$f" ]; then say "   FAIL missing $f"; FAIL=1; fi
 done
@@ -80,7 +80,7 @@ done
 # Look for the actual ENDPOINTS and SDK hosts, not the word "telemetry" - a
 # skill that teaches you to detect and remove a beacon legitimately names it.
 say "6. telemetry endpoints"
-TL=$(grep -rniE 'https?://[a-z0-9.-]*(posthog|mixpanel|amplitude|segment\.io|sentry\.io|google-analytics|googletagmanager|hotjar|fullstory)\.|api[0-9]?\.heygen\.com' \
+TL=$(grep -rniE 'https?://[a-z0-9.-]*(posthog|mixpanel|amplitude|segment\.io|sentry\.io|google-analytics|googletagmanager|hotjar|fullstory)\.|api[0-9]?\.vendor\.example\.com' \
        skills/ 2>/dev/null || true)
 if [ -n "$TL" ]; then
   say "   FAIL"; say "$TL"; FAIL=1

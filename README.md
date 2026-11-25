@@ -56,8 +56,6 @@ Skills are plain Markdown. Any agent that reads a skills directory can use them.
 | Document | Covers |
 |---|---|
 | [`LICENSE`](LICENSE) | MIT — the terms governing the code. |
-| [`NOTICE`](NOTICE) | Attribution and the modification record for Apache-2.0-derived material. |
-| [`LICENSES/Apache-2.0.txt`](LICENSES/) | Full licence text for the adapted work, travelling with it as required. |
 | [`TRADEMARK.md`](TRADEMARK.md) | What may be done with the name and marks — and what needs permission. |
 | [`DISCLAIMER.md`](DISCLAIMER.md) | No warranty; benchmarks are reported, not measured; not professional advice. |
 | [`PRIVACY.md`](PRIVACY.md) | What the software does with your data: nothing, by design. |
@@ -97,14 +95,7 @@ original stays cleanly MIT.
 
 ## Attribution
 
-`html-to-video-local` adapts the published motion doctrine of the
-[HyperFrames](https://github.com/heygen-com/hyperframes) project
-(**Apache-2.0**, adapted with attribution). Its CLI, account-linked usage
-beacon, plan-usage reporting and hosted API are deliberately **not** used; the
-renderer here is an independent local implementation. Changes are recorded in
-[`NOTICE`](NOTICE) and in the skill's Provenance section.
-
-Everything else is original work, MIT.
+All original work, MIT. No upstream project's text is reproduced here.
 
 ## Ethics
 

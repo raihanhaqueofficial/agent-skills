@@ -2,7 +2,7 @@
 /**
  * renderer.mjs — local HTML -> video, offline.
  *
- * Contract (same principle as HyperFrames, none of the vendor parts):
+ * Contract (seek a paused timeline; no vendor, no network):
  *   - the page defines `window.__timeline(t)` which sets ALL visible state
  *     as a pure function of time t (seconds). No Date.now(), no unseeded
  *     Math.random(), no network, no timers.

@@ -49,9 +49,9 @@ part and document the removal** in [`NOTICE`](NOTICE), as
 By contributing you agree your contribution is licensed under the repository's
 [MIT licence](LICENSE), and you confirm you have the right to submit it.
 
-If your contribution adapts third-party work, say so in the pull request and
-add the attribution to [`NOTICE`](NOTICE). Do not paste code you do not have
-the right to relicense.
+If your contribution adapts third-party work, say so in the pull request and add
+whatever attribution the upstream licence requires. Do not paste code you do not
+have the right to relicense.
 
 ## Run the gate before you push
 

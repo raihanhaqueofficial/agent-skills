@@ -160,7 +160,7 @@ grep -rnoE 'https?://[a-z0-9.-]+\.[a-z]{2,}' <install-dir> | sort -u
   part of an install**, and never install a CLI whose only purpose is to make
   such a skill work.
 - **Check transitive dependencies too.** A skill can be clean yet pin a
-  beaconing CLI at runtime (`build.mjs` doing `hyperframes@<version>`), which
+  beaconing CLI at runtime (`build.mjs` doing `<vendor-cli>@<version>`), which
   reintroduces the problem the moment it is used.
 - **Quarantine, do not delete.** `mv` the skill dirs to
   `<vendor>/_quarantine-<reason>/` and say how to restore them. Deleting
