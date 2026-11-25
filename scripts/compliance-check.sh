@@ -15,6 +15,7 @@ FAIL=0
 # mistaken for a leaked third-party detail. Anything else personal is a leak.
 mask_author() {
   sed -e 's/raihanhaqueofficial/__HANDLE__/g' \
+      -e 's/raihanhaque7/__HANDLE__/g' \
       -e 's/Raihan Haque Official/__AUTHOR__/g' \
       -e 's/Raihan Haque/__AUTHOR__/g'
 }
