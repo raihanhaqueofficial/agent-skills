@@ -12,14 +12,16 @@
 <style>
   /* ---------- tokens ---------- */
   :root{
-    --canvas:#F7F5F0;          /* warm cream, not pure white */
-    --canvas-2:#F1EEE7;
-    --ink:#12141A;             /* warm near-black, not #000 */
-    --ink-soft:#5A5F6B;
-    --line:rgba(18,20,26,.12);
-    --accent:#18AFFF;
-    --accent-deep:#2E45C9;
-    --card:rgba(255,255,255,.55);
+    --canvas:#FFFFFF;          /* Raihan Haque --bg */
+    --canvas-2:#F6F8FE;
+    --ink:#0E1116;             /* Raihan Haque --ink */
+    --ink-soft:#4A5160;        /* derived: tonal step off --ink for hierarchy */
+    --dim:#6B7280;
+    --line:rgba(14,17,22,.12);
+    --accent:#5677FF;          /* Raihan Haque --blue */
+    --accent-deep:#2E45C9;     /* Raihan Haque --blue-deep */
+    --deep:#0B0E14;            /* Raihan Haque --dark */
+    --card:#F7F8FC;            /* tint so cards read on white */
     --r:999px;
     --maxw:1180px;
     --pad:clamp(20px,5vw,64px);
@@ -40,19 +42,19 @@
   .aura{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
   .aura::before,.aura::after{content:"";position:absolute;inset:-30%;
     background:
-      radial-gradient(42% 30% at 22% 18%, rgba(24,175,255,.20), transparent 60%),
-      radial-gradient(36% 26% at 78% 12%, rgba(46,69,201,.16), transparent 62%),
-      radial-gradient(50% 34% at 60% 76%, rgba(24,175,255,.10), transparent 66%);
+      radial-gradient(42% 30% at 22% 18%, rgba(86,119,255,.22), transparent 60%),
+      radial-gradient(36% 26% at 78% 12%, rgba(46,69,201,.18), transparent 62%),
+      radial-gradient(50% 34% at 60% 76%, rgba(86,119,255,.11), transparent 66%);
     filter:blur(38px); }
   .aura::after{background:
-      radial-gradient(38% 24% at 12% 62%, rgba(46,69,201,.12), transparent 60%),
-      radial-gradient(44% 28% at 88% 58%, rgba(24,175,255,.13), transparent 62%);
+      radial-gradient(38% 24% at 12% 62%, rgba(46,69,201,.13), transparent 60%),
+      radial-gradient(44% 28% at 88% 58%, rgba(86,119,255,.14), transparent 62%);
     filter:blur(54px); }
   main,nav,footer{position:relative;z-index:1}
 
   /* ---------- nav ---------- */
   nav{position:sticky;top:0;z-index:20;backdrop-filter:blur(14px);
-      background:color-mix(in srgb, var(--canvas) 78%, transparent);
+      background:rgba(255,255,255,.78);
       border-bottom:1px solid transparent;transition:border-color .3s}
   nav.scrolled{border-bottom-color:var(--line)}
   .nav-in{display:flex;align-items:center;gap:26px;padding:16px 0}
@@ -68,9 +70,9 @@
        border-radius:var(--r);font-size:16px;font-weight:600;letter-spacing:-.01em;
        transition:transform .18s cubic-bezier(.16,1,.3,1),box-shadow .18s,background .18s;white-space:nowrap}
   .btn:hover{transform:translateY(-2px)}
-  .btn-dark{background:var(--ink);color:#F7F5F0;box-shadow:0 1px 0 rgba(0,0,0,.06)}
-  .btn-dark:hover{box-shadow:0 12px 28px rgba(18,20,26,.22)}
-  .btn-ghost{background:rgba(255,255,255,.5);color:var(--ink);border:1px solid var(--line)}
+  .btn-dark{background:var(--deep);color:#FFFFFF;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+  .btn-dark:hover{box-shadow:0 12px 28px rgba(11,14,20,.22)}
+  .btn-ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
   .btn-ghost:hover{background:#fff}
 
   /* ---------- hero ---------- */
@@ -82,26 +84,26 @@
   .lede{margin-top:26px;font-size:clamp(17px,1.6vw,20px);color:var(--ink-soft);max-width:46ch}
   .cta-row{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
   .pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:30px}
-  .pill{font-size:13.5px;padding:7px 14px;border-radius:var(--r);background:rgba(255,255,255,.6);
+  .pill{font-size:13.5px;padding:7px 14px;border-radius:var(--r);background:var(--card);
         border:1px solid var(--line);color:var(--ink-soft);font-weight:500}
   .pill b{color:var(--ink);font-weight:600}
 
   /* ---------- shard mosaic (their glass-shard hero, reinterpreted) ---------- */
   .shards{position:relative;aspect-ratio:1/1.06;min-height:340px}
-  .shard{position:absolute;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.7);
-         box-shadow:0 20px 48px rgba(18,20,26,.13);background:var(--card);
+  .shard{position:absolute;border-radius:16px;overflow:hidden;border:1px solid rgba(14,17,22,.06);
+         box-shadow:0 20px 48px rgba(14,17,22,.10);background:var(--card);
          display:grid;place-items:center;font-weight:700;letter-spacing:-.02em;
          transition:transform .5s cubic-bezier(.16,1,.3,1)}
   .shard:hover{transform:translateY(-8px) rotate(0deg) !important}
   .shard span{font-size:clamp(12.5px,1.35vw,15.5px);text-align:center;padding:10px;line-height:1.3}
-  .s1{width:44%;height:31%;left:0;top:2%;transform:rotate(-6deg);background:linear-gradient(150deg,#fff,#EAF4FF)}
-  .s2{width:42%;height:29%;right:0;top:0;transform:rotate(5deg);background:linear-gradient(150deg,#0B0E14,#1B2430);color:#F7F5F0}
+  .s1{width:44%;height:31%;left:0;top:2%;transform:rotate(-6deg);background:linear-gradient(150deg,#fff,#EEF2FF)}
+  .s2{width:42%;height:29%;right:0;top:0;transform:rotate(5deg);background:linear-gradient(150deg,#0B0E14,#1B2430);color:#FFFFFF}
   .s3{width:50%;height:30%;left:25%;top:35%;transform:rotate(-2deg);
       background:linear-gradient(150deg,var(--accent),var(--accent-deep));color:#fff;z-index:2}
-  .s4{width:44%;height:29%;left:0;bottom:6%;transform:rotate(4deg);background:linear-gradient(150deg,#fff,#EFEDE7)}
-  .s5{width:42%;height:29%;right:0;bottom:2%;transform:rotate(-5deg);background:linear-gradient(150deg,#fff,#E9F1EC)}
+  .s4{width:44%;height:29%;left:0;bottom:6%;transform:rotate(4deg);background:linear-gradient(150deg,#fff,#F4F6FD)}
+  .s5{width:42%;height:29%;right:0;bottom:2%;transform:rotate(-5deg);background:linear-gradient(150deg,#fff,#EEF2FF)}
   .s6{width:8%;height:7.5%;right:20%;top:28%;transform:rotate(-12deg);border-radius:12px;
-      background:linear-gradient(135deg,var(--accent),#7BD1FF);box-shadow:0 10px 26px rgba(24,175,255,.35);z-index:3}
+      background:linear-gradient(135deg,var(--accent),#8FA5FF);box-shadow:0 10px 26px rgba(86,119,255,.35);z-index:3}
 
   /* ---------- sections ---------- */
   section{padding:clamp(56px,8vw,104px) 0}
@@ -114,7 +116,7 @@
   .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:26px;
         transition:transform .25s cubic-bezier(.16,1,.3,1),box-shadow .25s,background .25s;
         backdrop-filter:blur(8px);display:flex;flex-direction:column;gap:12px}
-  .card:hover{transform:translateY(-4px);box-shadow:0 20px 46px rgba(18,20,26,.10);background:#fff}
+  .card:hover{transform:translateY(-4px);box-shadow:0 20px 46px rgba(14,17,22,.10);background:#fff}
   .card h3{font-size:19px;letter-spacing:-.025em;font-weight:700}
   .card code{font-family:var(--mono);font-size:13px;color:var(--accent-deep)}
   .card p{font-size:15.5px;color:var(--ink-soft)}
@@ -122,13 +124,13 @@
        border:1px solid var(--line);border-radius:var(--r);padding:4px 10px;align-self:flex-start}
 
   /* install */
-  .install{background:var(--ink);color:#F7F5F0;border-radius:28px;padding:clamp(30px,4vw,54px)}
-  .install h2{color:#F7F5F0}
-  .install .sub{color:rgba(247,245,240,.66)}
+  .install{background:var(--deep);color:#FFFFFF;border-radius:28px;padding:clamp(30px,4vw,54px)}
+  .install h2{color:#FFFFFF}
+  .install .sub{color:rgba(255,255,255,.68)}
   pre{margin-top:26px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
       border-radius:16px;padding:20px 22px;overflow-x:auto;font-family:var(--mono);
       font-size:14px;line-height:1.85;color:#DCE6F2}
-  pre .c{color:#7BD1FF}
+  pre .c{color:#8FA5FF}
   pre .d{color:rgba(220,230,242,.5)}
 
   /* explainer rows */
@@ -159,7 +161,7 @@
          display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;
          font-size:13.5px;color:var(--ink-soft)}
   .badges{display:flex;gap:8px;flex-wrap:wrap}
-  .badge{font-size:12.5px;border:1px solid var(--line);border-radius:var(--r);padding:5px 12px;background:rgba(255,255,255,.5)}
+  .badge{font-size:12.5px;border:1px solid var(--line);border-radius:var(--r);padding:5px 12px;background:var(--card)}
 
   /* reveal on scroll */
   .rv{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
@@ -257,7 +259,7 @@
 
   <section id="install"><div class="wrap">
     <div class="install rv">
-      <p class="kicker" style="color:#7BD1FF">Install</p>
+      <p class="kicker" style="color:#8FA5FF">Install</p>
       <h2>Copy one folder.</h2>
       <p class="sub">Skills are plain Markdown. Any agent that reads a skills directory can use them —
         no build step, no account, no service.</p>
