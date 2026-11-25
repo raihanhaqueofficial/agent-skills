@@ -1,0 +1,4 @@
+CHROME_PATH
+node_modules/
+_frames_*/
+*.mp4

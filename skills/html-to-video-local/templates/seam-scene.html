@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>html-video demo — brand-locked motion</title>
+<style>
+  /* ---- brand tokens: set these to your own ---- */
+  :root{
+    --canvas-deep:#17181C;   /* measured plate dark */
+    --red:#BF1D1D;           /* brand red — FILLS ONLY */
+    --red-text:#D42A2A;      /* lifted red — all red TEXT (AA on canvas) */
+    --text:#F5F5F7;
+    --dim:#C9CBD1;
+    --faint:#8A8E98;
+    --rule:#3A3E48;
+  }
+  @font-face{
+    font-family:"Playfair";
+    src:url("PlayfairDisplay.ttf") format("truetype");
+    font-weight:400 900;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#17181C;overflow:hidden}
+  /* ---- WHITE-FLASH GUARD -------------------------------------------------
+     The stage MUST be opaque. During a seam both scenes' summed opacity can
+     dip below 1, and whatever is behind them shows through. With no opaque
+     #root, the renderer composites that dip over its default WHITE page and
+     you get a white flash at every cut — glaring on a dark film. Same bug
+     class was observed in production on dark launch videos. */
+  #root{
+    position:relative;width:1080px;height:1920px;overflow:hidden;
+    background:var(--canvas-deep);
+    color:var(--text);font-family:"Playfair",serif;
+  }
+  .scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+         will-change:transform;backface-visibility:hidden}
+  .beat{font-weight:700;line-height:1.14;text-align:center;letter-spacing:-0.01em}
+  .scene small{display:block;font-size:30px;letter-spacing:.34em;color:var(--faint);
+               margin-bottom:38px;font-weight:500;text-transform:uppercase}
+  #a .beat{font-size:104px}
+  #b .beat{font-size:96px;color:var(--red-text)}
+  #b .rule{width:340px;height:7px;background:var(--red);border-radius:4px;
+           margin:56px auto 0}
+  /* caption rail is an OVERLAY — it never reserves a band, so the composition
+     keeps its full frame and stays centred on the true vertical centre */
+  #rail{position:absolute;left:0;right:0;bottom:150px;text-align:center;
+        font-size:44px;font-weight:600;color:var(--dim);opacity:0}
+  #rail b{color:var(--red-text);font-weight:800}
+  #bar{position:absolute;left:10%;right:10%;bottom:78px;height:5px;
+       background:var(--rule);border-radius:3px;overflow:hidden}
+  #barfill{height:100%;width:0;background:var(--red);border-radius:3px}
+  #mark{position:absolute;top:96px;left:0;right:0;text-align:center;
+        font-size:28px;letter-spacing:.5em;color:var(--faint);font-weight:500}
+</style>
+</head>
+<body>
+<div id="root">
+  <div id="mark">YOUR STUDIO</div>
+
+  <div class="scene" id="a">
+    <div>
+      <small>kicker</small>
+      <div class="beat">Your<br>headline.</div>
+    </div>
+  </div>
+
+  <div class="scene" id="b">
+    <div>
+      <div class="beat">The second<br>beat.</div>
+      <div class="rule"></div>
+    </div>
+  </div>
+
+  <div id="rail">It shows up whether you <b>feel like it</b> or not.</div>
+  <div id="bar"><div id="barfill"></div></div>
+</div>
+
+<script>
+/* ---------------------------------------------------------------------------
+   THE CONTRACT
+   window.__timeline(t) sets ALL visible state as a pure function of t seconds.
+   No Date.now(), no unseeded Math.random(), no timers, no network.
+   The renderer seeks this paused timeline frame by frame, so the render is
+   deterministic — frame 240 is always identical, take after take.
+--------------------------------------------------------------------------- */
+
+const T_CUT = 3.0;          // the hard cut, taken at peak velocity
+const APPROACH = 0.5;       // window before the cut
+const SETTLE = 0.5;         // window after
+const TRAVEL = 0.12;        // partial travel: ~12% of frame, NOT a full slide
+const DUR = 6.0;
+
+// Mirrored power-4 pair. The point of the pair is that BOTH sides have the
+// same speed at the cut, so the eye's momentum is continuous across it:
+//   incoming accel:  x = -TRAVEL * p^4        -> |dx/dp| = 4 at p=1
+//   outgoing decel:  x = +TRAVEL * (1-p)^4    -> |dx/dp| = 4 at p=0
+// Same magnitude, same direction (leftward). That is velocity matching.
+const easeInQuart  = p => p * p * p * p;
+const easeOutQuart = p => 1 - Math.pow(1 - p, 4);
+
+const clamp01 = v => v < 0 ? 0 : v > 1 ? 1 : v;
+
+// entry cascade for the headline beats (staggered arrival, no seam)
+const rise = (t, start, dur, dist = 26) => {
+  const p = clamp01((t - start) / dur);
+  const e = 1 - Math.pow(1 - p, 3);            // cubic out
+  return { opacity: e, y: dist * (1 - e) };
+};
+
+function __timeline(t){
+  const a = document.getElementById("a");
+  const b = document.getElementById("b");
+
+  // ---- THE SEAM: a hard cut at peak velocity, NOT a slide-through --------
+  // A full slide shows neither scene's content at the midpoint (both halves
+  // are off-frame at once) - a dead, blank beat. Partial travel + a hard cut
+  // keeps content on screen the whole time and still reads as one move.
+  if (t < T_CUT){
+    const p = clamp01((t - (T_CUT - APPROACH)) / APPROACH);
+    a.style.display = "flex";
+    b.style.display = "none";
+    a.style.transform = `translateX(${(-TRAVEL * 1080 * easeInQuart(p)).toFixed(2)}px)`;
+  } else {
+    const p = clamp01((t - T_CUT) / SETTLE);
+    a.style.display = "none";
+    b.style.display = "flex";
+    b.style.transform = `translateX(${(TRAVEL * 1080 * Math.pow(1 - p, 4)).toFixed(2)}px)`;
+  }
+
+  // ---- in-scene arrivals (before the seam; no competing motion) ----
+  const ra = rise(t, 0.20, 0.55);
+  a.querySelector(".beat").style.opacity = ra.opacity;
+  a.querySelector(".beat").style.transform = `translateY(${ra.y.toFixed(2)}px)`;
+  a.querySelector("small").style.opacity = ra.opacity * 0.9;
+
+  const rb = rise(t, T_CUT + 0.05, 0.45);
+  b.querySelector(".beat").style.opacity = rb.opacity;
+
+  // ---- stillness before the climax -------------------------------------
+  // Motion must PERFORM, not breathe. After the beat lands nothing animates;
+  // no idle wobble to fill the space. b holds perfectly still from ~4.3s.
+
+  // ---- caption rail (overlay), timed to the spoken beat ----
+  const rail = document.getElementById("rail");
+  const rp = clamp01((t - 4.35) / 0.35);
+  rail.style.opacity = rp * clamp01((DUR - t) / 0.6);
+
+  // ---- progress bar ----
+  document.getElementById("barfill").style.width = (clamp01(t / DUR) * 100) + "%";
+}
+window.__timeline = __timeline;
+__timeline(0);            // paint frame 0 immediately
+</script>
+</body>
+</html>
