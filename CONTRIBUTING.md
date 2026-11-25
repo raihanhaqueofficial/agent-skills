@@ -53,6 +53,16 @@ If your contribution adapts third-party work, say so in the pull request and
 add the attribution to [`NOTICE`](NOTICE). Do not paste code you do not have
 the right to relicense.
 
+## Run the gate before you push
+
+```bash
+./scripts/compliance-check.sh
+```
+
+Same script CI runs, so a green local run means a green pull request. It checks
+for personal data, absolute paths, secrets, stray emails, telemetry endpoints,
+required files, and well-formed skills.
+
 ## Pull requests
 
 - One skill or one fix per pull request.

@@ -24,6 +24,12 @@ telemetry, no reliance on a paid service.
 | **[`web-app-teardown`](skills/web-app-teardown)** | Understand what a live web app actually runs — shipped bundle + DevTools capture — instead of trusting its marketing pages. |
 | **[`installing-third-party-repos`](skills/installing-third-party-repos)** | Install a repo properly: triage its shape, mirror linked layouts, audit it for telemetry, verify with a real check. |
 
+## Verify compliance
+
+```bash
+./scripts/compliance-check.sh     # the same gate CI runs
+```
+
 ## Install
 
 ```bash
