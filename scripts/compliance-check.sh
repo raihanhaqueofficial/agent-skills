@@ -14,10 +14,16 @@ FAIL=0
 # copyright, and the trademark claim. Mask it before scanning so it is never
 # mistaken for a leaked third-party detail. Anything else personal is a leak.
 mask_author() {
-  sed -e 's/raihanhaqueofficial/__HANDLE__/g' \
-      -e 's/raihanhaque7/__HANDLE__/g' \
-      -e 's/Raihan Haque Official/__AUTHOR__/g' \
-      -e 's/Raihan Haque/__AUTHOR__/g'
+  # The author's own identity is deliberate and allowed: mask it completely so it
+  # can never be mistaken for leaked third-party data. Covers raihanhaqueofficial,
+  # raihanhaque7, raihan-haque-* asset filenames, "Raihan Haque" and #raihan.
+  #
+  # Business names (diginess, dreamphonya, phoron, anant, credo, kolkata,
+  # thedrinkofmotivation) are deliberately NOT masked — they stay active
+  # blockers in AUTHOR_RE below.
+  sed -e 's/[Rr]aihan[- ]\?[Hh]aque[A-Za-z0-9]*/__AUTHOR__/g' \
+      -e 's/[Rr]aihan/__AUTHOR__/g' \
+      -e 's/[Hh]aque/__AUTHOR__/g'
 }
 AUTHOR_RE='raihan|haque|diginess|dreamphonya|phoron|anant|credo|kolkata|thedrinkofmotivation|226390473'
 
@@ -62,7 +68,7 @@ fi
 say "4. email addresses"
 EM=$(grep -rnoE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}' . \
       --exclude-dir=.git --exclude-dir=.github 2>/dev/null \
-     | grep -viE 'example\.com|you@|user@|@users\.noreply\.github\.com' || true)
+     | grep -viE 'example\.com|you@|user@|@users\.noreply\.github\.com|raihanhaqueofficial@gmail\.com' || true)   # author's own published business address
 if [ -n "$EM" ]; then
   say "   FAIL"; say "$EM"; FAIL=1
 else

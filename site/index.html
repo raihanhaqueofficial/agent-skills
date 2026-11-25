@@ -5,35 +5,50 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>agent-skills — reusable skills for AI agents · Raihan Haque</title>
 <meta name="description" content="Reusable skills for AI coding agents: token-lean output, short-form benchmarks, offline HTML-to-video rendering, web-app teardown. By Raihan Haque.">
+
+<!-- Favicons (Raihan Haque) -->
+<link rel="icon" type="image/x-icon" href="https://www.raihanhaqueofficial.com/favicon/raihan-haque-favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="https://www.raihanhaqueofficial.com/favicon/raihan-haque-favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://www.raihanhaqueofficial.com/favicon/raihan-haque-favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="https://www.raihanhaqueofficial.com/favicon/raihan-haque-apple-touch-icon.png">
+
 <link rel="canonical" href="https://www.raihanhaqueofficial.com/agent-skills/">
 <meta property="og:title" content="agent-skills — reusable skills for AI agents">
 <meta property="og:description" content="Open agent skills for video, research and tooling. No telemetry. Built by Raihan Haque.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://www.raihanhaqueofficial.com/agent-skills/">
+<meta property="og:image" content="https://www.raihanhaqueofficial.com/favicon/raihan-haque-icon-512x512.png">
 <meta name="theme-color" content="#0B0E14">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebPage",
+  "name":"agent-skills — reusable skills for AI agents",
+  "url":"https://www.raihanhaqueofficial.com/agent-skills/",
+  "description":"Reusable skills for AI coding agents. Open source, MIT licensed, no telemetry.",
+  "author":{"@id":"https://www.raihanhaqueofficial.com/#raihan"},
+  "publisher":{"@id":"https://www.raihanhaqueofficial.com/#org"},
+  "isPartOf":{"@id":"https://www.raihanhaqueofficial.com/#website"}
+}
+</script>
+
 <style>
 /* ==============================================================
-   Matched to the Raihan Haque GUIDE-PAGE template
-   (guides/ai-music-blueprint · competitor-engine · ai-sound-clinic)
-
-     --dark      #0B0E14   hero + install block + footer
-     --ink       #0E1116   body text
-     --blue      #5677FF   primary button
-     --blue-deep #2E45C9
-     --azure     #18AFFF   eyebrow + gradient start
-     hero text   #eef2ff   hero sub #aab4c6   footer #7b8699
-     blocks      #F7F9FC alternating with white
-
-   Layout mirrored from the guide pages: centred single-column hero
-   (eyebrow -> h1 with .grad accent -> sub -> one CTA -> micro-line ->
-   4-stat row), then alternating white / #F7F9FC blocks, a dark install
-   block, and a centred dark footer.
+   Raihan Haque — guide-page template
+   Mirrors guides/ai-music-blueprint, competitor-engine, ai-sound-clinic
+     --dark #0B0E14   hero + install block + footer
+     --ink  #0E1116   body text
+     --blue #5677FF   CTA     --azure #18AFFF  eyebrow + all footer links
+     hero text #eef2ff   hero sub #aab4c6   footer muted #5b6470
+     blocks #F7F9FC alternating with white
    ============================================================== */
 :root{
   --dark:#0B0E14; --ink:#0E1116; --ink-soft:#252B34;
   --blue:#5677FF; --blue-deep:#2E45C9; --azure:#18AFFF;
   --block:#F7F9FC; --white:#FFFFFF;
-  --hero-text:#eef2ff; --hero-sub:#aab4c6; --foot-text:#7b8699;
-  --hair:rgba(14,17,22,.10); --hair-d:rgba(255,255,255,.12);
+  --hero-text:#eef2ff; --hero-sub:#aab4c6;
   --font:Inter,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --maxw:1180px; --pad:clamp(20px,5vw,48px);
@@ -47,19 +62,17 @@ img{max-width:100%;display:block}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
 code{font-family:var(--mono);font-size:.92em}
 
-/* ---------- nav — as on the guide pages ---------- */
-nav.nav{position:absolute;top:0;left:0;right:0;z-index:20}
+/* ---------- nav ---------- */
+.nav{position:absolute;top:0;left:0;right:0;z-index:20}
 .nav-in{display:flex;align-items:center;justify-content:space-between;height:70px}
 .who{display:flex;align-items:center;gap:11px;color:var(--hero-text);font-weight:700;font-size:16px}
-.avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
-        background:linear-gradient(140deg,var(--azure),var(--blue-deep));
-        color:#fff;font-size:13px;font-weight:800;
-        box-shadow:0 0 0 2px rgba(24,175,255,.35)}
+.who img{width:32px;height:32px;border-radius:50%;object-fit:cover;
+         box-shadow:0 0 0 2px rgba(24,175,255,.45)}
 .handle{font-size:14px;color:#8d9bb5;font-weight:500}
 .handle:hover{color:var(--hero-text)}
 @media(max-width:520px){.handle{display:none}}
 
-/* ---------- HERO — centred, single column ---------- */
+/* ---------- hero: centred single column ---------- */
 .hero{background:var(--dark);color:var(--hero-text);position:relative;overflow:hidden;
       padding:112px 0 72px;text-align:center}
 #signal{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
@@ -67,35 +80,24 @@ nav.nav{position:absolute;top:0;left:0;right:0;z-index:20}
   background:radial-gradient(58% 46% at 50% 0%, rgba(86,119,255,.22), transparent 64%),
              radial-gradient(46% 34% at 82% 22%, rgba(24,175,255,.13), transparent 66%)}
 .hero-in{position:relative;z-index:2}
-
-.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;
-         color:var(--azure);font-weight:700}
+.eyebrow{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--azure);font-weight:700}
 .eyebrow .dot{display:inline-block;width:6px;height:6px;border-radius:50%;
               background:var(--azure);vertical-align:middle;margin-right:8px}
-
 .hero h1{margin-top:18px;font-size:clamp(32px,6vw,56px);font-weight:800;
          letter-spacing:-1.12px;line-height:1.1;color:var(--hero-text)}
-/* the .grad treatment, verbatim from the guide pages */
 .grad{background:linear-gradient(100deg,var(--azure),var(--blue));
       -webkit-background-clip:text;background-clip:text;color:transparent}
-
-.sub{font-size:clamp(16px,2.4vw,20px);color:var(--hero-sub);
-     margin:22px auto 32px;max-width:640px}
-
-/* the guide CTA: blue, weight 700, 12px radius, soft blue shadow */
+.sub{font-size:clamp(16px,2.4vw,20px);color:var(--hero-sub);margin:22px auto 32px;max-width:640px}
 .btn{display:inline-block;background:var(--blue);color:#fff;font-weight:700;font-size:17px;
-     padding:16px 34px;border-radius:12px;
-     box-shadow:0 8px 24px rgba(86,119,255,.32);
+     padding:16px 34px;border-radius:12px;box-shadow:0 8px 24px rgba(86,119,255,.32);
      transition:transform .15s,box-shadow .15s}
 .btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(86,119,255,.45)}
 .micro{margin-top:16px;font-size:13.5px;color:#8d9bb5}
-
-/* stat row — 4 stats, centred, as on the guide pages */
 .stats{display:flex;gap:34px;justify-content:center;margin-top:44px;flex-wrap:wrap}
 .stat .n{font-size:30px;font-weight:800;letter-spacing:-.03em;color:var(--hero-text);line-height:1.1}
 .stat .c{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8d9bb5;margin-top:6px}
 
-/* ---------- BLOCKS — white / #F7F9FC alternating + a dark block ---------- */
+/* ---------- blocks ---------- */
 section{padding:72px 0}
 .block{background:var(--block)}
 .block-dark{background:var(--dark);color:var(--hero-text)}
@@ -107,9 +109,8 @@ h2{margin-top:12px;font-size:clamp(26px,4.4vw,38px);font-weight:800;
 .blk-sub{margin-top:14px;max-width:680px;font-size:17px;color:#4A5160}
 .block-dark .blk-sub{color:var(--hero-sub)}
 
-/* cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:16px;margin-top:38px}
-.card{background:var(--white);border:1px solid var(--hair);border-radius:16px;padding:26px;
+.card{background:var(--white);border:1px solid rgba(14,17,22,.10);border-radius:16px;padding:26px;
       display:flex;flex-direction:column;gap:11px;transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(14,17,22,.09)}
 .card h3{font-size:18px;font-weight:700;letter-spacing:-.02em}
@@ -119,24 +120,22 @@ h2{margin-top:12px;font-size:clamp(26px,4.4vw,38px);font-weight:800;
      color:var(--blue-deep);background:rgba(86,119,255,.10);
      border-radius:999px;padding:5px 11px;align-self:flex-start}
 
-/* install block */
-.install{background:rgba(255,255,255,.05);border:1px solid var(--hair-d);
+.install{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
          border-radius:16px;padding:clamp(24px,3.4vw,42px)}
-pre{margin-top:22px;background:rgba(0,0,0,.30);border:1px solid var(--hair-d);
+pre{margin-top:22px;background:rgba(0,0,0,.30);border:1px solid rgba(255,255,255,.12);
     border-radius:12px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);
     font-size:13.5px;line-height:1.9;color:#d4ddff}
 pre .c{color:var(--azure)}
 pre .d{color:rgba(212,221,255,.45)}
 
-/* principles rows */
-.rows{margin-top:34px;border-top:1px solid var(--hair)}
-.row{display:grid;grid-template-columns:230px 1fr;gap:22px;padding:20px 0;border-bottom:1px solid var(--hair)}
+.rows{margin-top:34px;border-top:1px solid rgba(14,17,22,.10)}
+.row{display:grid;grid-template-columns:230px 1fr;gap:22px;padding:20px 0;
+     border-bottom:1px solid rgba(14,17,22,.10)}
 @media(max-width:760px){.row{grid-template-columns:1fr;gap:6px}}
 .row dt{font-weight:700;letter-spacing:-.02em}
 .row dd{color:#4A5160;font-size:16px}
 
-/* faq */
-details{border-bottom:1px solid var(--hair);padding:18px 0}
+details{border-bottom:1px solid rgba(14,17,22,.10);padding:18px 0}
 summary{cursor:pointer;font-weight:600;font-size:17px;letter-spacing:-.02em;list-style:none;
         display:flex;justify-content:space-between;gap:18px;align-items:center}
 summary::-webkit-details-marker{display:none}
@@ -144,23 +143,25 @@ summary::after{content:"+";color:var(--blue-deep);font-weight:800;font-size:20px
 details[open] summary::after{content:"−"}
 details p{margin-top:10px;color:#4A5160;font-size:16px;max-width:74ch}
 
-/* badges */
 .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
-.badge{font-size:12.5px;border:1px solid var(--hair);border-radius:999px;
+.badge{font-size:12.5px;border:1px solid rgba(14,17,22,.10);border-radius:999px;
        padding:6px 13px;background:var(--white);color:var(--ink-soft)}
 
-/* ---------- FOOTER — centred, dark, as on the guide pages ---------- */
-footer{background:var(--dark);color:var(--foot-text);padding:38px 0;text-align:center;font-size:13px}
-.foot-social{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:16px}
-.foot-social a{color:var(--hero-sub);font-size:13.5px}
-.foot-social a:hover{color:var(--hero-text);text-decoration:underline;text-underline-offset:3px}
-.foot-brand{display:inline-flex;align-items:center;gap:9px;color:var(--hero-text);
-            font-weight:700;margin-bottom:12px;font-size:15px}
-footer .legal{margin-top:12px;font-size:12px;color:#5d6779;line-height:1.8}
+/* ---------- FOOTER — structure copied from the guide pages ---------- */
+footer{background:var(--dark);color:#8d97a8;padding:44px 0;text-align:center;font-size:13.5px}
+footer a{color:var(--azure);text-decoration:none}
+footer a:hover{text-decoration:underline;text-underline-offset:3px}
+.brand{display:inline-flex;align-items:center;gap:11px;color:var(--hero-text);
+       font-weight:700;font-size:16px}
+.brand img{width:44px;height:44px;border-radius:50%;object-fit:cover;
+           box-shadow:0 0 0 3px rgba(86,119,255,.22),0 0 0 1px rgba(24,175,255,.55)}
+footer p{margin-top:14px}
+footer p a,footer .links a{color:var(--azure)}
+footer .socials{margin:14px 0;line-height:2}
+footer .links{margin:12px 0;line-height:2}
+.copyright{color:#5b6470;margin-top:16px}
 
-/* ---------- reveal: progressive enhancement ONLY ----------
-   The hidden state applies only once JS confirms it runs (.js on <html>).
-   Without JS every block renders — no invisible page, no missing footer. */
+/* ---------- reveal: progressive enhancement ONLY ---------- */
 .js .rv{opacity:0;transform:translateY(16px);
         transition:opacity .6s cubic-bezier(.16,1,.3,1),transform .6s cubic-bezier(.16,1,.3,1)}
 .js .rv.in{opacity:1;transform:none}
@@ -173,7 +174,7 @@ footer .legal{margin-top:12px;font-size:12px;color:#5d6779;line-height:1.8}
 <body>
 
 <nav class="nav"><div class="wrap nav-in">
-  <a class="who" href="https://www.raihanhaqueofficial.com/"><span class="avatar">R</span>Raihan Haque</a>
+  <a class="who" href="https://www.raihanhaqueofficial.com/"><img src="https://www.raihanhaqueofficial.com/img/raihan-haque-avatar.png" alt="Raihan Haque"> Raihan Haque</a>
   <a class="handle" href="https://github.com/raihanhaqueofficial">@raihanhaqueofficial</a>
 </div></nav>
 
@@ -306,8 +307,8 @@ footer .legal{margin-top:12px;font-size:12px;color:#5d6779;line-height:1.8}
     <details><summary>Is it free?</summary>
       <p>Yes — MIT. Use it, modify it, ship it commercially.</p></details>
     <details><summary>Does anything phone home?</summary>
-      <p>No. No network calls to my servers, no analytics, no accounts, no cookies. Where an upstream
-        tool reported usage, those components were removed and the change recorded.</p></details>
+      <p>No. No network calls to my servers, no analytics, no accounts, no cookies from this project.
+        Where an upstream tool reported usage, those components were removed and the change recorded.</p></details>
     <details><summary>Why no Terms &amp; Conditions file?</summary>
       <p>Because MIT already <em>is</em> the terms. A restrictive T&amp;C over a permissive licence
         creates a contradiction. The trademark policy covers what a licence genuinely cannot.</p></details>
@@ -317,20 +318,16 @@ footer .legal{margin-top:12px;font-size:12px;color:#5d6779;line-height:1.8}
   </div>
 </div></section>
 
-<footer><div class="wrap">
-  <div class="foot-social">
-    <a href="https://instagram.com/raihanhaqueofficial">Instagram</a>
-    <a href="https://linkedin.com/in/raihanhaqueofficial">LinkedIn</a>
-    <a href="https://github.com/raihanhaqueofficial">GitHub</a>
-    <a href="https://x.com/raihanhaque7">X</a>
-    <a href="https://www.youtube.com/@raihanhaqueofficial">YouTube</a>
-    <a href="https://www.raihanhaqueofficial.com/contact/">Contact</a>
+<!-- FOOTER — same structure and order as the guide pages -->
+<footer>
+  <div class="wrap">
+    <a class="brand" href="https://www.raihanhaqueofficial.com/" aria-label="Go to homepage"><img src="https://www.raihanhaqueofficial.com/img/raihan-haque-avatar.png" alt="Raihan Haque"> Raihan Haque</a>
+    <p>agent-skills · Open Source Edition, 2026</p>
+    <div class="socials" style="margin:14px 0;"><a href="mailto:raihanhaqueofficial@gmail.com">Email</a> · <a href="https://instagram.com/raihanhaqueofficial">Instagram</a> · <a href="https://linkedin.com/in/raihanhaqueofficial">LinkedIn</a> · <a href="https://github.com/raihanhaqueofficial">GitHub</a> · <a href="https://wa.me/919564980590">WhatsApp</a> · <a href="https://x.com/raihanhaque7">X</a> · <a href="https://www.youtube.com/@raihanhaqueofficial">YouTube</a></div>
+    <div class="links" style="margin:12px 0;"><a href="https://www.raihanhaqueofficial.com/">Home</a> · <a href="https://www.raihanhaqueofficial.com/privacy/">Privacy Policy</a> · <a href="https://www.raihanhaqueofficial.com/cookies/">Cookie Policy</a> · <a href="https://www.raihanhaqueofficial.com/terms/">Terms</a> · <a href="https://www.raihanhaqueofficial.com/contact/">Contact</a></div>
+    <p class="copyright">© 2026 Raihan Haque. All rights reserved.</p>
   </div>
-  <div class="foot-brand"><span class="avatar" style="width:26px;height:26px;font-size:12px">R</span>Raihan Haque</div>
-  <div>Performance Marketer who owns outcomes — CPA, ROAS, LTV.</div>
-  <div class="legal">© 2026 Raihan Haque · Code MIT · Name and marks not licensed<br>
-    Not legal advice · no lawyer reviewed this project's documents</div>
-</div></footer>
+</footer>
 
 <script>
 /* Flag JS availability BEFORE any hidden state can apply, so a viewer that
@@ -350,8 +347,7 @@ document.documentElement.classList.add('js');
     Array.prototype.forEach.call(rv, function (el) { el.classList.add('in'); });
   }
 
-  /* ---------- particle field, echoing the homepage hero ----------
-     Capped node count, paused off-screen, static frame under reduced-motion. */
+  /* particle field, echoing the homepage hero */
   var canvas = document.getElementById('signal');
   if (!canvas || !canvas.getContext) return;
   var ctx = canvas.getContext('2d');
